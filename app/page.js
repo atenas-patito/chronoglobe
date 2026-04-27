@@ -11,6 +11,52 @@ const CAT_COLORS = {
   economia:  '#BA7517'
 }
 
+const ERAS = [
+  { from: -3000, to: -1200, label: "Edad de Bronce", sub: "Primeras civilizaciones", color: "#2a1a0a" },
+  { from: -1200, to: -500, label: "Edad de Hierro", sub: "Grecia arcaica · Fenicios · Asiria", color: "#1a1a0a" },
+  { from: -500, to: -27, label: "Antigüedad clásica", sub: "Grecia · Persia · República romana", color: "#0a1a2a" },
+  { from: -27, to: 476, label: "Imperio Romano", sub: "Pax romana · Expansión del cristianismo", color: "#1a0a2a" },
+  { from: 476, to: 1000, label: "Alta Edad Media", sub: "Caída de Roma · Islam · Carolingios", color: "#0a2a1a" },
+  { from: 1000, to: 1300, label: "Baja Edad Media", sub: "Cruzadas · Renacimiento urbano", color: "#1a2a0a" },
+  { from: 1300, to: 1500, label: "Crisis medieval · Renacimiento", sub: "Peste negra · Humanismo italiano", color: "#2a1a00" },
+  { from: 1500, to: 1650, label: "Edad Moderna temprana", sub: "América · Reforma · Imperios globales", color: "#2a0a0a" },
+  { from: 1650, to: 1750, label: "Absolutismo · Barroco", sub: "Revolución científica · Monarquías", color: "#0a1a2a" },
+  { from: 1750, to: 1800, label: "Ilustración", sub: "Razón · Enciclopedia · Independencias", color: "#0a0a2a" },
+  { from: 1800, to: 1850, label: "Revolución Industrial", sub: "Vapor · Romanticismo · Napoleón", color: "#1a1a2a" },
+  { from: 1850, to: 1914, label: "Siglo XIX tardío", sub: "Imperialismo · Darwin · Marxismo", color: "#0a2a2a" },
+  { from: 1914, to: 1945, label: "Era de las guerras", sub: "Guerras mundiales · Fascismo · Crisis", color: "#2a0a0a" },
+  { from: 1945, to: 1991, label: "Guerra Fría", sub: "Descolonización · Space race · Derechos civiles", color: "#0a0a1a" },
+  { from: 1991, to: 2000, label: "Mundo contemporáneo", sub: "Globalización · Internet · Fin de la URSS", color: "#001a1a" },
+]
+
+const MILESTONES = [
+  { year: -3000, label: "Escritura" },
+  { year: -776,  label: "Olimpiadas" },
+  { year: -44,   label: "César" },
+  { year: 570,   label: "Mahoma" },
+  { year: 1066,  label: "Normandos" },
+  { year: 1215,  label: "Magna Carta" },
+  { year: 1347,  label: "Peste negra" },
+  { year: 1440,  label: "Imprenta" },
+  { year: 1492,  label: "América" },
+  { year: 1543,  label: "Copérnico" },
+  { year: 1687,  label: "Newton" },
+  { year: 1776,  label: "Independencia" },
+  { year: 1789,  label: "Rev. Francesa" },
+  { year: 1859,  label: "Darwin" },
+  { year: 1914,  label: "1ª Guerra" },
+  { year: 1969,  label: "Luna" },
+]
+
+function getEra(from, to) {
+  const mid = (from + to) / 2
+  return ERAS.find(e => mid >= e.from && mid < e.to) || ERAS[ERAS.length - 1]
+}
+
+function yearToPercent(year) {
+  return ((year - (-3000)) / (2000 - (-3000))) * 100
+}
+
 export default function Home() {
   const globeEl = useRef(null)
   const worldRef = useRef(null)
@@ -81,10 +127,27 @@ export default function Home() {
 
   const categories = ['all','filosofia','derecho','ciencia','politica','arte','economia']
 
+ const era = getEra(yearFrom, yearTo)
+
   return (
-    <div style={{ position: 'relative', width: '100vw', height: '100vh', background: '#000' }}>
+    <div style={{ position: 'relative', width: '100vw', height: '100vh', background: era.color, transition: 'background 1s ease' }}>
       <div ref={globeEl} style={{ width: '100%', height: '100%' }} />
 
+      {/* Era display */}
+      <div style={{
+        position: 'absolute', bottom: 100, left: '50%',
+        transform: 'translateX(-50%)',
+        textAlign: 'center', pointerEvents: 'none'
+      }}>
+        <div style={{ fontSize: 28, fontWeight: 700, color: 'rgba(255,255,255,0.15)', letterSpacing: 2, textTransform: 'uppercase', whiteSpace: 'nowrap' }}>
+          {era.label}
+        </div>
+        <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.1)', marginTop: 4 }}>
+          {era.sub}
+        </div>
+      </div>
+
+      {/* Top bar */}
       <div style={{
         position: 'absolute', top: 0, left: 0, right: 0,
         padding: '12px 16px',
@@ -122,8 +185,71 @@ export default function Home() {
             ))}
           </div>
         </div>
+
+        {/* Slider con hitos */}
+        <div style={{ position: 'relative', padding: '0 4px' }}>
+
+          {/* Hitos */}
+          <div style={{ position: 'relative', height: 20, marginBottom: 2 }}>
+            {MILESTONES.map(m => {
+              const pct = yearToPercent(m.year)
+              if (pct < 0 || pct > 100) return null
+              const inRange = m.year >= yearFrom && m.year <= yearTo
+              return (
+                <div key={m.year} style={{
+                  position: 'absolute',
+                  left: `${pct}%`,
+                  transform: 'translateX(-50%)',
+                  display: 'flex', flexDirection: 'column', alignItems: 'center',
+                  opacity: inRange ? 1 : 0.3,
+                  transition: 'opacity 0.3s'
+                }}>
+                  <span style={{ fontSize: 9, color: 'rgba(255,255,255,0.7)', whiteSpace: 'nowrap' }}>{m.label}</span>
+                  <span style={{ width: 1, height: 4, background: 'rgba(255,255,255,0.4)', display: 'block' }} />
+                </div>
+              )
+            })}
+          </div>
+
+          {/* Sliders duales */}
+          <div style={{ position: 'relative', height: 20, display: 'flex', alignItems: 'center' }}>
+            <div style={{
+              position: 'absolute', left: 0, right: 0, height: 3,
+              background: 'rgba(255,255,255,0.2)', borderRadius: 2
+            }} />
+            <div style={{
+              position: 'absolute', height: 3,
+              left: `${yearToPercent(yearFrom)}%`,
+              width: `${yearToPercent(yearTo) - yearToPercent(yearFrom)}%`,
+              background: '#fff', borderRadius: 2
+            }} />
+            <input type="range" min={-3000} max={2000} value={yearFrom} step={1}
+              onChange={e => {
+                const v = Number(e.target.value)
+                if (v < yearTo) setYearFrom(v)
+              }}
+              style={{ position: 'absolute', width: '100%', opacity: 0, cursor: 'pointer', zIndex: 2 }}
+            />
+            <input type="range" min={-3000} max={2000} value={yearTo} step={1}
+              onChange={e => {
+                const v = Number(e.target.value)
+                if (v > yearFrom) setYearTo(v)
+              }}
+              style={{ position: 'absolute', width: '100%', opacity: 0, cursor: 'pointer', zIndex: 2 }}
+            />
+          </div>
+
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 2 }}>
+            <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.4)' }}>3000 a.C.</span>
+            <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.9)', fontWeight: 500 }}>
+              {era.label} · {yearFrom < 0 ? `${Math.abs(yearFrom)} a.C.` : yearFrom} — {yearTo < 0 ? `${Math.abs(yearTo)} a.C.` : yearTo}
+            </span>
+            <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.4)' }}>2000</span>
+          </div>
+        </div>
       </div>
 
+      {/* Panel lateral */}
       {panel && (
         <div style={{
           position: 'absolute', top: 0, right: 0, width: 320, height: '100%',
