@@ -1,38 +1,73 @@
 export async function POST(request) {
-  const { name, year, region } = await request.json()
+  const { name, year, region, cat } = await request.json()
 
   const yearLabel = year < 0 ? `${Math.abs(year)} a.C.` : `${year}`
 
-  // Busca en Wikipedia en español
-  const searchRes = await fetch(
-    `https://es.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(name)}`
-  )
+  // Construye términos de búsqueda más específicos
+  // Extrae palabras clave del nombre del evento, descartando palabras genéricas
+  const stopWords = ['de', 'del', 'la', 'el', 'en', 'y', 'a', 'los', 'las', 'un', 'una', 'por', 'con', 'su', 'al']
+  const keywords = name.split(' ')
+    .filter(w => !stopWords.includes(w.toLowerCase()) && w.length > 2)
+    .slice(0, 4)
+    .join(' ')
 
-  if (searchRes.ok) {
-    const data = await searchRes.json()
-    return Response.json({
-      text: data.extract || 'No se encontró información para este evento.',
-      url: data.content_urls?.desktop?.page || null
-    })
+  const country = region.split('·')[1]?.trim() || region
+
+  // Intentos de búsqueda en orden de especificidad
+  const searches = [
+    keywords,
+    `${keywords} ${country}`,
+    name,
+  ]
+
+  for (const query of searches) {
+    try {
+      // Primero busca en Wikipedia
+      const searchRes = await fetch(
+        `https://es.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(query)}&format=json&origin=*&srlimit=3`
+      )
+      const searchData = await searchRes.json()
+      const results = searchData.query?.search || []
+
+      // Filtrá resultados que sean siglos o fechas genéricas
+      const filtered = results.filter(r => {
+        const t = r.title.toLowerCase()
+        return !t.startsWith('siglo') && !t.startsWith('año') && !t.match(/^\d/)
+      })
+
+      if (filtered.length === 0) continue
+
+      // Trae el resumen del primer resultado relevante
+      const pageRes = await fetch(
+        `https://es.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(filtered[0].title)}`
+      )
+
+      if (!pageRes.ok) continue
+
+      const page = await pageRes.json()
+
+      if (!page.extract || page.extract.length < 100) continue
+
+      // Trunca si es muy largo
+      const text = page.extract.length > 800
+        ? page.extract.substring(0, 800) + '...'
+        : page.extract
+
+      return Response.json({
+        title: page.title,
+        text,
+        url: page.content_urls?.desktop?.page || null
+      })
+
+    } catch {
+      continue
+    }
   }
 
-  // Si no encuentra por nombre exacto, intenta búsqueda
-  const fallbackRes = await fetch(
-    `https://es.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(name + ' ' + yearLabel)}&format=json&origin=*`
-  )
-  const fallback = await fallbackRes.json()
-  const firstResult = fallback.query?.search?.[0]
-
-  if (firstResult) {
-    const pageRes = await fetch(
-      `https://es.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(firstResult.title)}`
-    )
-    const page = await pageRes.json()
-    return Response.json({
-      text: page.extract || 'No se encontró información.',
-      url: page.content_urls?.desktop?.page || null
-    })
-  }
-
-  return Response.json({ text: 'No se encontró información para este evento.', url: null })
+  // Si no encontró nada útil
+  return Response.json({
+    title: name,
+    text: `No se encontró información específica sobre este evento en Wikipedia. Podés buscarlo directamente como "${name}" (${yearLabel}, ${region}).`,
+    url: `https://es.wikipedia.org/w/index.php?search=${encodeURIComponent(name)}`
+  })
 }

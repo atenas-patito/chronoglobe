@@ -91,7 +91,7 @@ export default function Home() {
         body: JSON.stringify({ name: event.name, year: event.year, region: event.region, cat: event.cat })
       })
       const data = await res.json()
-      setPanel({ name: event.name, region: event.region, year: event.year, text: data.text, url: data.url })
+      setPanel({ name: event.name, region: event.region, year: event.year, text: data.text, url: data.url, wikiTitle: data.title })
     } catch {
       setPanel(p => ({ ...p, text: 'No se pudo cargar la información.' }))
     }
@@ -352,6 +352,11 @@ export default function Home() {
           }}>×</button>
           <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', marginBottom: 4 }}>{panel.region}</div>
           <div style={{ fontSize: 16, fontWeight: 500, marginBottom: 4 }}>{panel.name}</div>
+          {panel.wikiTitle && panel.wikiTitle !== panel.name && (
+            <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.35)', marginBottom: 4 }}>
+              Wikipedia: {panel.wikiTitle}
+            </div>
+          )}
           <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.35)', marginBottom: 16 }}>{formatYear(panel.year)}</div>
           {loading && <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)' }}>Buscando información...</div>}
           {panel.text && (
