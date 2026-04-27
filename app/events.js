@@ -199,5 +199,5 @@ export const EVENTS = [
   { id: 198, name: "Expansión del comercio marítimo en Turquía", lat: 41.0, lng: 29.0, year: 360, region: "Oriente Medio · Turquía", cat: "filosofia" },
   { id: 199, name: "Desarrollo de la astronomía local en India", lat: 28.6, lng: 77.2, year: 318, region: "Asia · India", cat: "derecho" },
   { id: 200, name: "Expansión del comercio marítimo en Perú", lat: -13.5, lng: -71.9, year: -602, region: "América · Perú", cat: "ciencia" }
-  export default EVENTS
 ];
+  export default EVENTS
