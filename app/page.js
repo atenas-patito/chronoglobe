@@ -590,7 +590,7 @@ async function handleEraClick(selectedEra) {
                 </div>
               )}
 
-              {panel.parsed && (
+              {panel.parsed && panel.parsed.regiones && (
                 <div style={{ fontFamily: 'sans-serif' }}>
                   <div style={{
                     background: 'rgba(139,94,26,0.08)',

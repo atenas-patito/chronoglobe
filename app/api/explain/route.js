@@ -40,15 +40,26 @@ async function tryGemini(prompt) {
 async function tryGroq(prompt) {
   const completion = await groq.chat.completions.create({
     model: 'llama-3.3-70b-versatile',
-    max_tokens: 400,
+    max_tokens: 600,
+    temperature: 0.3,
     messages: [
-      { role: 'system', content: 'Respondés SOLO con JSON válido, sin markdown ni explicaciones.' },
-      { role: 'user',   content: prompt }
+      { role: 'system', content: 'Respondés SOLO con JSON válido y completo, sin markdown. Nunca cortés el JSON a la mitad. Cada texto debe ser muy breve, máximo 20 palabras por campo.' },
+      { role: 'user', content: prompt }
     ]
   })
-  const text = completion.choices[0]?.message?.content?.trim()
+  let text = completion.choices[0]?.message?.content?.trim()
     .replace(/```json/g, '').replace(/```/g, '').trim()
-  return JSON.parse(text)
+  
+  // Intenta reparar JSON cortado agregando el cierre
+  try {
+    return JSON.parse(text)
+  } catch {
+    // Si falla, intenta cerrar el JSON manualmente
+    if (!text.endsWith('}')) {
+      text = text + '"}]}' 
+    }
+    return JSON.parse(text)
+  }
 }
 
 export async function POST(request) {
