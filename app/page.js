@@ -86,14 +86,14 @@ function formatYear(y) {
 
 // Colores del tema histórico
 const THEME = {
-  bg: '#1a1208',
-  panel: 'rgba(20,14,4,0.92)',
-  border: 'rgba(180,140,80,0.2)',
-  accent: '#c8a45a',
-  accentDim: 'rgba(200,164,90,0.4)',
-  text: '#e8d9b8',
-  textDim: 'rgba(232,217,184,0.5)',
-  textFaint: 'rgba(232,217,184,0.25)',
+  bg: '#f5ead6',
+  panel: 'rgba(245,234,210,0.97)',
+  border: 'rgba(160,120,60,0.25)',
+  accent: '#8b5e1a',
+  accentDim: 'rgba(139,94,26,0.4)',
+  text: '#2c1f0a',
+  textDim: 'rgba(44,31,10,0.55)',
+  textFaint: 'rgba(44,31,10,0.3)',
 }
 
 export default function Home() {
@@ -118,7 +118,8 @@ export default function Home() {
   })
 
   async function handlePointClick(event) {
-    setPanel({ name: event.name, region: event.region, year: event.year, cat: event.cat, text: null })
+    event.stopPropagation?.()
+    setPanel({ name: event.name, region: event.region, year: event.year, cat: event.cat, parsed: null })
     setRightOpen(true)
     setLoading(true)
     try {
@@ -128,7 +129,7 @@ export default function Home() {
         body: JSON.stringify({ name: event.name, year: event.year, region: event.region, cat: event.cat })
       })
       const data = await res.json()
-      setPanel(p => ({ ...p, text: data.text, url: data.url }))
+      setPanel(p => ({ ...p, parsed: data.parsed, text: data.text }))
     } catch {
       setPanel(p => ({ ...p, text: 'No se pudo cargar la información.' }))
     }
@@ -199,6 +200,15 @@ export default function Home() {
       })
 
       worldRef.current = world
+
+      const handleResize = () => {
+        if (globeEl.current) {
+          world.width(globeEl.current.offsetWidth)
+          world.height(globeEl.current.offsetHeight)
+        }
+      }
+      window.addEventListener('resize', handleResize)
+      return () => window.removeEventListener('resize', handleResize)
     })
   }, [])
 
@@ -210,7 +220,7 @@ export default function Home() {
   const rightPct = yearToPercent(yearTo)
   const categories = ['all','filosofia','derecho','ciencia','politica','arte','economia']
 
-  const PANEL_W = 260
+  const PANEL_W = 320
 
   return (
     <div style={{ width: '100vw', height: '100vh', background: era.color, transition: 'background 1.5s ease', display: 'flex', overflow: 'hidden', fontFamily: 'Georgia, serif' }}>
@@ -221,7 +231,7 @@ export default function Home() {
           <div key={`${era.label}-${i}`} style={{
             position: 'absolute',
             fontSize: [140, 100, 80][i],
-            opacity: 0.06,
+            opacity: 0.18,
             top: ['12%', '52%', '25%'][i],
             left: ['18%', '62%', '78%'][i],
             transition: 'all 1.8s ease',
@@ -259,16 +269,16 @@ export default function Home() {
             borderRadius: 8, padding: 12, marginBottom: 16,
             borderLeft: `2px solid ${THEME.accentDim}`
           }}>
-            <div style={{ fontSize: 9, color: THEME.textFaint, marginBottom: 4, textTransform: 'uppercase', letterSpacing: 1 }}>
+            <div style={{ fontSize: 10, color: THEME.textFaint, marginBottom: 4, textTransform: 'uppercase', letterSpacing: 1 }}>
               Período seleccionado
             </div>
-            <div style={{ fontSize: 14, fontWeight: 700, color: THEME.accent, marginBottom: 4 }}>
+            <div style={{ fontSize: 15, fontWeight: 700, color: THEME.accent, marginBottom: 4 }}>
               {era.label}
             </div>
-            <div style={{ fontSize: 11, color: THEME.textDim, marginBottom: 8 }}>
+            <div style={{ fontSize: 12, color: THEME.textDim, marginBottom: 8 }}>
               {formatYear(yearFrom)} — {formatYear(yearTo)}
             </div>
-            <div style={{ fontSize: 12, color: THEME.text, lineHeight: 1.65 }}>
+            <div style={{ fontSize: 14, color: THEME.text, lineHeight: 1.65 }}>
               {era.summary}
             </div>
             <div style={{ marginTop: 10, display: 'flex', gap: 6 }}>
@@ -278,8 +288,22 @@ export default function Home() {
             </div>
           </div>
 
+          {/* Leyenda */}
+          <div style={{ fontSize: 12, color: THEME.textFaint, textTransform: 'uppercase', letterSpacing: 1, marginTop: 16, marginBottom: 8 }}>
+            Categorías
+          </div>
+          {Object.entries(CAT_COLORS).map(([cat, color]) => (
+            <div key={cat} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6, cursor: 'pointer' }}
+              onClick={() => setFilter(filter === cat ? 'all' : cat)}>
+              <span style={{ fontSize: 13 }}>{CAT_ICONS[cat]}</span>
+              <span style={{ fontSize: 12, color: filter === cat ? THEME.accent : THEME.textDim, fontFamily: 'sans-serif', textTransform: 'capitalize' }}>{cat}</span>
+              {filter === cat && <span style={{ fontSize: 9, color: THEME.accentDim }}>✓</span>}
+            </div>
+          ))}
+
+<div style={{ marginBottom: 16 }} />
           {/* Cómo usar */}
-          <div style={{ fontSize: 9, color: THEME.textFaint, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 8 }}>
+          <div style={{ fontSize: 12, color: THEME.textFaint, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 8 }}>
             Cómo explorar
           </div>
           {[
@@ -292,25 +316,12 @@ export default function Home() {
           ].map((item, i) => (
             <div key={i} style={{ display: 'flex', gap: 8, marginBottom: 7, alignItems: 'flex-start' }}>
               <span style={{ fontSize: 13 }}>{item.icon}</span>
-              <span style={{ fontSize: 11, color: THEME.textDim, lineHeight: 1.5, fontFamily: 'sans-serif' }}>{item.text}</span>
-            </div>
-          ))}
-
-          {/* Leyenda */}
-          <div style={{ fontSize: 9, color: THEME.textFaint, textTransform: 'uppercase', letterSpacing: 1, marginTop: 16, marginBottom: 8 }}>
-            Categorías
-          </div>
-          {Object.entries(CAT_COLORS).map(([cat, color]) => (
-            <div key={cat} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6, cursor: 'pointer' }}
-              onClick={() => setFilter(filter === cat ? 'all' : cat)}>
-              <span style={{ fontSize: 13 }}>{CAT_ICONS[cat]}</span>
-              <span style={{ fontSize: 11, color: filter === cat ? THEME.accent : THEME.textDim, fontFamily: 'sans-serif', textTransform: 'capitalize' }}>{cat}</span>
-              {filter === cat && <span style={{ fontSize: 9, color: THEME.accentDim }}>✓</span>}
+              <span style={{ fontSize: 12, color: THEME.textDim, lineHeight: 1.5, fontFamily: 'sans-serif' }}>{item.text}</span>
             </div>
           ))}
 
           {/* Estado rotación */}
-          <div style={{ marginTop: 20, fontSize: 10, color: THEME.textFaint, fontFamily: 'sans-serif' }}>
+          <div style={{ marginTop: 20, fontSize: 11, color: THEME.textFaint, fontFamily: 'sans-serif' }}>
             {rotating ? '⟳ Rotando — click para pausar' : '⏸ Pausado — click para reanudar'}
           </div>
         </div>
@@ -337,7 +348,7 @@ export default function Home() {
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', position: 'relative', zIndex: 1, overflow: 'hidden' }}>
 
         {/* Globo */}
-        <div ref={globeEl} style={{ flex: 1, width: '100%' }} />
+        <div ref={globeEl} style={{ flex: 1, width: '100%', minHeight: 0 }} />
 
         {/* Watermark era */}
         <div style={{
@@ -354,11 +365,11 @@ export default function Home() {
         <div style={{
           background: THEME.panel,
           borderTop: `1px solid ${THEME.border}`,
-          padding: '10px 16px 12px',
+          padding: '4px 12px 6px',
           zIndex: 5
         }}>
           {/* Eras clickeables */}
-          <div style={{ display: 'flex', gap: 3, flexWrap: 'wrap', marginBottom: 8 }}>
+          <div style={{ display: 'flex', gap: 3, overflowX: 'auto', marginBottom: 4, paddingBottom: 4, scrollbarWidth: 'none' }}>
             {ERAS.map(e => {
               const active = yearFrom === e.from && yearTo === e.to
               const inRange = yearFrom <= e.to && yearTo >= e.from
@@ -380,7 +391,7 @@ export default function Home() {
           </div>
 
           {/* Slider dual */}
-          <div style={{ position: 'relative', height: 6, borderRadius: 3, background: 'rgba(200,164,90,0.15)', cursor: 'pointer', marginBottom: 6 }}
+          <div style={{ position: 'relative', height: 6, borderRadius: 3, background: 'rgba(200,164,90,0.15)', cursor: 'pointer', marginBottom: 3 }}
             onClick={handleTrackClick}>
             <div style={{
               position: 'absolute', top: 0, height: '100%', borderRadius: 3,
@@ -436,24 +447,23 @@ export default function Home() {
       </div>
 
       {/* Toggle derecho */}
-      <button onClick={() => setRightOpen(o => !o)} style={{
-        position: 'absolute', right: rightOpen ? PANEL_W : 0,
-        top: '50%', transform: 'translateY(-50%)',
-        transition: 'right 0.3s ease',
-        zIndex: 11,
+     <button onClick={() => setRightOpen(o => !o)} style={{
+        alignSelf: 'center',
         background: THEME.panel,
         border: `1px solid ${THEME.border}`,
+        borderRight: rightOpen ? 'none' : `1px solid ${THEME.border}`,
         color: THEME.accent,
         width: 18, height: 44,
-        borderRadius: '6px 0 0 6px',
+        borderRadius: rightOpen ? '6px 0 0 6px' : '6px',
         cursor: 'pointer', fontSize: 10,
-        display: 'flex', alignItems: 'center', justifyContent: 'center'
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        flexShrink: 0, zIndex: 11
       }}>
         {rightOpen ? '›' : '‹'}
       </button>
 
       {/* Panel derecho */}
-      <div style={{
+     <div style={{
         width: rightOpen ? PANEL_W : 0,
         minWidth: rightOpen ? PANEL_W : 0,
         transition: 'width 0.3s ease, min-width 0.3s ease',
@@ -463,7 +473,7 @@ export default function Home() {
         zIndex: 10,
         flexShrink: 0
       }}>
-        {panel && (
+         {panel && (
           <div style={{ width: PANEL_W, padding: '20px 16px', overflowY: 'auto', height: '100%' }}>
             <button onClick={() => { setPanel(null); setRightOpen(false) }} style={{
               float: 'right', background: 'none', border: 'none',
@@ -485,7 +495,41 @@ export default function Home() {
                 Consultando fuentes históricas...
               </div>
             )}
-            {panel.text && (
+
+            {panel.parsed && (
+              <div style={{ fontFamily: 'sans-serif' }}>
+                {/* Texto local */}
+                <div style={{
+                  background: 'rgba(139,94,26,0.08)',
+                  borderRadius: 8, padding: '10px 12px', marginBottom: 16,
+                  borderLeft: `2px solid ${THEME.accentDim}`
+                }}>
+                  <div style={{ fontSize: 10, color: THEME.textFaint, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 4 }}>
+                    En este lugar
+                  </div>
+                  <p style={{ fontSize: 13, lineHeight: 1.7, color: THEME.text, margin: 0 }}>
+                    {panel.parsed.local}
+                  </p>
+                </div>
+
+                {/* Regiones */}
+                <div style={{ fontSize: 10, color: THEME.textFaint, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 10 }}>
+                  Mientras tanto en el mundo
+                </div>
+                {panel.parsed.regiones.map((r, i) => (
+                  <div key={i} style={{ marginBottom: 12 }}>
+                    <div style={{ fontSize: 12, fontWeight: 600, color: THEME.accent, marginBottom: 3 }}>
+                      {r.emoji} {r.nombre}
+                    </div>
+                    <p style={{ fontSize: 12, lineHeight: 1.6, color: THEME.textDim, margin: 0 }}>
+                      {r.texto}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {!panel.parsed && panel.text && (
               <p style={{ fontSize: 13, lineHeight: 1.8, color: THEME.text, fontFamily: 'sans-serif' }}>
                 {panel.text}
               </p>
