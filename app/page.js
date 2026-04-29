@@ -21,54 +21,33 @@ const CAT_ICONS = {
 }
 
 const ERAS = [
-  { from: -3000, to: -1200, label: "Edad de Bronce", color: "#2c1f0e",
-    summary: "Las primeras ciudades y escrituras emergen en Mesopotamia, Egipto, el Valle del Indo y China. Se inventan el bronce, la rueda y el calendario.",
-    icons: ["🏺", "📜", "🛞"] },
-  { from: -1200, to: -500, label: "Edad de Hierro", color: "#2a1e0a",
-    summary: "El hierro democratiza las armas. Los fenicios difunden el alfabeto. Surge la épica homérica. Asiria construye el primer gran imperio multicultural.",
-    icons: ["⚔️", "🚢", "📖"] },
-  { from: -500, to: -27, label: "Antigüedad clásica", color: "#1e1e2a",
-    summary: "Atenas inventa la democracia y la filosofía occidental. Alejandro conecta Oriente y Occidente. En Asia, Buda y Confucio transforman el pensamiento.",
-    icons: ["🏛️", "⚖️", "🎭"] },
-  { from: -27, to: 476, label: "Imperio Romano", color: "#20132a",
-    summary: "Roma unifica el mundo con carreteras, leyes y un idioma común. El cristianismo se expande desde Palestina. En China, la dinastía Han florece en paralelo.",
-    icons: ["🏟️", "✝️", "🛣️"] },
-  { from: 476, to: 1000, label: "Alta Edad Media", color: "#0e1f18",
-    summary: "Roma cae y Europa se fragmenta. El Islam surge y llega desde España hasta India. Bagdad se convierte en el centro del saber mundial.",
-    icons: ["🕌", "📿", "🌙"] },
-  { from: 1000, to: 1300, label: "Baja Edad Media", color: "#1a1f0a",
-    summary: "Las ciudades europeas renacen. Las Cruzadas conectan Oriente y Occidente. Las universidades nacen en Bolonia y París. El Imperio Mongol unifica Asia.",
-    icons: ["🏰", "🎓", "🗺️"] },
-  { from: 1300, to: 1500, label: "Renacimiento", color: "#2a1500",
-    summary: "La Peste Negra sacude el orden medieval. El humanismo italiano redescubre la Antigüedad. Gutenberg inventa la imprenta. Los aztecas e incas alcanzan su apogeo.",
-    icons: ["🖨️", "🎨", "🔭"] },
-  { from: 1500, to: 1650, label: "Edad Moderna", color: "#2a0e00",
-    summary: "Europa llega a América. Lutero desafía a la Iglesia. El Imperio Otomano domina desde Viena hasta Persia. China bajo los Ming es la mayor economía del planeta.",
-    icons: ["⛵", "🌎", "📿"] },
-  { from: 1650, to: 1750, label: "Absolutismo", color: "#0a1520",
-    summary: "Newton describe las leyes del universo. Los reyes absolutos centralizan el poder. En Japón, el período Edo produce una cultura urbana sofisticada.",
-    icons: ["👑", "🔬", "🌐"] },
-  { from: 1750, to: 1800, label: "Ilustración", color: "#0e0e2a",
-    summary: "La razón desafía la tradición. Voltaire, Rousseau y Montesquieu reinventan la política. América del Norte se independiza. La Revolución Francesa sacude el mundo.",
-    icons: ["💡", "📚", "🗽"] },
-  { from: 1800, to: 1850, label: "Revolución Industrial", color: "#141420",
-    summary: "La máquina de vapor transforma la producción. Napoleón redibuja Europa. Nace el proletariado industrial. Latinoamérica se independiza en una generación.",
-    icons: ["⚙️", "🚂", "🏭"] },
-  { from: 1850, to: 1914, label: "Siglo XIX tardío", color: "#0a1f1f",
-    summary: "Europa divide África. Darwin publica El origen de las especies. Marx diagnostica el capitalismo. El telégrafo y el ferrocarril achican el mundo.",
-    icons: ["🧬", "🌍", "📡"] },
-  { from: 1914, to: 1945, label: "Era de las guerras", color: "#20080a",
-    summary: "Dos guerras mundiales matan a cien millones. El fascismo y el comunismo compiten. Einstein revoluciona la física. El Holocausto sacude la conciencia moral.",
+  { from: -10000, to: -3500, label: "Revolución del Neolítico", sub: "Agricultura · Aldeas · Domesticación", color: "#1a1208",
+    icons: ["🌾", "🐄", "🏕️"] },
+  { from: -3500, to: -1200, label: "Primeras civilizaciones", sub: "Escritura · Ciudades · Estados", color: "#1a0e00",
+    icons: ["🏺", "📜", "🏛️"] },
+  { from: -1200, to: -200, label: "Edad Axial", sub: "Buda · Confucio · Sócrates · Zoroastro", color: "#0e1520",
+    icons: ["☯️", "🕊️", "📖"] },
+  { from: -200, to: 600, label: "Imperios clásicos", sub: "Roma · Han · Parta · Maurya", color: "#150a20",
+    icons: ["🏟️", "⚔️", "🛣️"] },
+  { from: 600, to: 1000, label: "Expansión religiosa", sub: "Islam · Budismo · Cristianismo · Hinduismo", color: "#0e1f18",
+    icons: ["🕌", "☸️", "✝️"] },
+  { from: 1000, to: 1400, label: "Mundo pre-moderno conectado", sub: "Ruta de la Seda · Mongoles · Intercambio global", color: "#1a1500",
+    icons: ["🗺️", "🐪", "⚖️"] },
+  { from: 1400, to: 1700, label: "Ruptura y conexión global", sub: "Imprenta · América · Reforma · Sistema-mundo", color: "#1a0a00",
+    icons: ["⛵", "🖨️", "🌎"] },
+  { from: 1700, to: 1800, label: "Era de la razón", sub: "Ilustración · Revolución científica · Independencias", color: "#0e0e2a",
+    icons: ["💡", "📚", "⚖️"] },
+  { from: 1800, to: 1914, label: "Era industrial", sub: "Vapor · Capitalismo · Imperialismo · Nacionalismo", color: "#0a0a1a",
+    icons: ["⚙️", "🚂", "🌍"] },
+  { from: 1914, to: 1945, label: "Era de las crisis globales", sub: "Guerras mundiales · Fascismo · Gran Depresión", color: "#20080a",
     icons: ["✈️", "☢️", "🕊️"] },
-  { from: 1945, to: 1991, label: "Guerra Fría", color: "#080820",
-    summary: "EEUU y la URSS dividen el mundo. África y Asia se descolonizan. Martin Luther King transforma la democracia. El hombre llega a la Luna.",
-    icons: ["🚀", "💻", "✊"] },
-  { from: 1991, to: 2000, label: "Mundo contemporáneo", color: "#081a10",
-    summary: "La URSS colapsa. Internet conecta a la humanidad. La globalización acelera el comercio. El cambio climático emerge como la gran amenaza del siglo.",
-    icons: ["🌐", "📱", "🌱"] },
+  { from: 1945, to: 1991, label: "Era de la descolonización", sub: "Guerra Fría · Independencias · Derechos civiles", color: "#080820",
+    icons: ["🚀", "✊", "🌐"] },
+  { from: 1991, to: 2000, label: "Era digital", sub: "Internet · Globalización · Fin de la Guerra Fría", color: "#081a10",
+    icons: ["💻", "📱", "🌱"] },
 ]
 
-const MIN_YEAR = -3000
+const MIN_YEAR = -10000
 const MAX_YEAR = 2000
 
 function yearToPercent(y) {
@@ -99,6 +78,7 @@ const THEME = {
 export default function Home() {
   const globeEl  = useRef(null)
   const worldRef = useRef(null)
+  const eraBarRef = useRef(null)
 
   const [yearFrom,  setYearFrom]  = useState(-500)
   const [yearTo,    setYearTo]    = useState(1800)
@@ -132,6 +112,42 @@ export default function Home() {
       setPanel(p => ({ ...p, parsed: data.parsed, text: data.text }))
     } catch {
       setPanel(p => ({ ...p, text: 'No se pudo cargar la información.' }))
+    }
+    setLoading(false)
+  }
+
+async function handleEraClick(selectedEra) {
+    setPanel({ 
+      name: selectedEra.label, 
+      region: 'Mundo', 
+      year: selectedEra.from,
+      cat: 'era',
+      isEra: true,
+      eraData: selectedEra,
+      text: null,
+      parsed: null
+    })
+    setRightOpen(true)
+    setLoading(true)
+    try {
+      const res = await fetch('/api/explain', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          name: selectedEra.label,
+          year: selectedEra.from,
+          region: 'Global',
+          cat: 'era',
+          isEra: true,
+          eraFrom: selectedEra.from,
+          eraTo: selectedEra.to,
+          eraSub: selectedEra.sub
+        })
+      })
+      const data = await res.json()
+      setPanel(p => ({ ...p, parsed: data.parsed, text: data.text }))
+    } catch {
+      setPanel(p => ({ ...p, text: 'No se pudo generar la información.' }))
     }
     setLoading(false)
   }
@@ -378,22 +394,60 @@ export default function Home() {
           zIndex: 5
         }}>
           {/* Eras clickeables */}
-          <div style={{ display: 'flex', gap: 3, overflowX: 'auto', marginBottom: 4, paddingBottom: 4, scrollbarWidth: 'none' }}>
-            {ERAS.map(e => {
+          <div 
+            style={{ 
+              display: 'flex', 
+              gap: 0,
+              overflowX: 'auto', 
+              marginBottom: 6,
+              scrollbarWidth: 'none',
+              cursor: 'grab',
+              userSelect: 'none'
+            }}
+            ref={eraBarRef}
+            onMouseDown={e => {
+              const el = eraBarRef.current
+              el.style.cursor = 'grabbing'
+              const startX = e.pageX - el.offsetLeft
+              const scrollLeft = el.scrollLeft
+              const onMove = ev => { el.scrollLeft = scrollLeft - (ev.pageX - el.offsetLeft - startX) }
+              const onUp = () => {
+                el.style.cursor = 'grab'
+                window.removeEventListener('mousemove', onMove)
+                window.removeEventListener('mouseup', onUp)
+              }
+              window.addEventListener('mousemove', onMove)
+              window.addEventListener('mouseup', onUp)
+            }}
+          >
+            {ERAS.map((e, i) => {
               const active = yearFrom === e.from && yearTo === e.to
               const inRange = yearFrom <= e.to && yearTo >= e.from
+              const isLast = i === ERAS.length - 1
               return (
                 <button key={e.from}
-                  onClick={() => { setYearFrom(e.from); setYearTo(e.to) }}
+                  onClick={() => { setYearFrom(e.from); setYearTo(e.to); handleEraClick(e) }}
                   style={{
-                    fontSize: 12, padding: '3px 9px', borderRadius: 20,
-                    border: `1px solid ${active ? THEME.accent : THEME.border}`,
-                    background: active ? 'rgba(200,164,90,0.2)' : inRange ? 'rgba(200,164,90,0.06)' : 'transparent',
+                    fontSize: 11, padding: '4px 12px',
+                    border: 'none',
+                    borderRight: isLast ? 'none' : `1px solid ${THEME.border}`,
+                    background: active ? 'rgba(139,94,26,0.25)' : inRange ? 'rgba(139,94,26,0.08)' : 'transparent',
                     color: active ? THEME.accent : inRange ? THEME.text : THEME.textFaint,
-                    cursor: 'pointer', fontFamily: 'Georgia, serif', whiteSpace: 'nowrap',
-                    transition: 'all 0.2s'
+                    cursor: 'pointer', fontFamily: 'Georgia, serif',
+                    whiteSpace: 'nowrap',
+                    transition: 'all 0.2s',
+                    position: 'relative',
+                    flexShrink: 0
                   }}>
                   {e.label}
+                  {i < ERAS.length - 1 && (
+                    <span style={{
+                      position: 'absolute', right: -8, top: '50%',
+                      transform: 'translateY(-50%)',
+                      color: THEME.textFaint, fontSize: 10, zIndex: 1,
+                      pointerEvents: 'none'
+                    }}>›</span>
+                  )}
                 </button>
               )
             })}
@@ -519,8 +573,13 @@ export default function Home() {
                 {panel.region}
               </div>
               <div style={{ fontSize: 15, fontWeight: 700, color: THEME.accent, marginBottom: 4 }}>
-                {CAT_ICONS[panel.cat]} {panel.name}
+              {panel.isEra ? '⏳' : CAT_ICONS[panel.cat]} {panel.name}
+            </div>
+            {panel.isEra && panel.eraData && (
+              <div style={{ fontSize: 11, color: THEME.textDim, marginBottom: 4, fontFamily: 'sans-serif', fontStyle: 'italic' }}>
+                {panel.eraData.sub}
               </div>
+            )}
               <div style={{ fontSize: 11, color: THEME.textDim, marginBottom: 16, fontFamily: 'sans-serif' }}>
                 {formatYear(panel.year)}
               </div>
@@ -539,7 +598,7 @@ export default function Home() {
                     borderLeft: `2px solid ${THEME.accentDim}`
                   }}>
                     <div style={{ fontSize: 10, color: THEME.textFaint, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 4 }}>
-                      En este lugar
+                      {panel.isEra ? 'Transformación global' : 'En este lugar'}
                     </div>
                     <p style={{ fontSize: 13, lineHeight: 1.7, color: THEME.text, margin: 0 }}>
                       {panel.parsed.local}
