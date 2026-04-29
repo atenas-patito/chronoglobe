@@ -212,17 +212,6 @@ export default function Home() {
     })
   }, [])
 
-      const handleResize = () => {
-        if (globeEl.current) {
-          world.width(globeEl.current.offsetWidth)
-          world.height(globeEl.current.offsetHeight)
-        }
-      }
-      window.addEventListener('resize', handleResize)
-      return () => window.removeEventListener('resize', handleResize)
-    })
-  }, [])
-
   useEffect(() => {
     if (worldRef.current) worldRef.current.pointsData(visibleEvents)
   }, [yearFrom, yearTo, filter])
