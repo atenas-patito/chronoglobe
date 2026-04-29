@@ -75,14 +75,14 @@ function formatYear(y) {
 
 // Colores del tema histórico
 const THEME = {
-  bg: '#f5ead6',
-  panel: 'rgba(245,234,210,0.97)',
-  border: 'rgba(160,120,60,0.25)',
-  accent: '#8b5e1a',
-  accentDim: 'rgba(139,94,26,0.4)',
-  text: '#2c1f0a',
-  textDim: 'rgba(44,31,10,0.55)',
-  textFaint: 'rgba(44,31,10,0.3)',
+  bg: '#f0f0f0',
+  panel: '#f8f8f8',
+  border: 'rgba(0,0,0,0.08)',
+  accent: '#1a1a1a',
+  accentDim: 'rgba(26,26,26,0.3)',
+  text: '#1a1a1a',
+  textDim: 'rgba(26,26,26,0.55)',
+  textFaint: 'rgba(26,26,26,0.3)',
 }
 
 export default function Home() {
@@ -195,9 +195,9 @@ async function handleEraClick(selectedEra) {
   useEffect(() => {
     import('globe.gl').then(({ default: Globe }) => {
       const world = Globe()(globeEl.current)
-        .globeImageUrl('//unpkg.com/three-globe/example/img/earth-day.jpg')
+        .globeImageUrl('//unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
         .backgroundImageUrl(null)
-        .backgroundColor('rgba(0,0,0,0)')
+        .backgroundColor('rgba(240,240,240,0)')
         .width(globeEl.current.offsetWidth)
         .height(globeEl.current.offsetHeight)
         .pointsData(visibleEvents)
@@ -249,7 +249,7 @@ async function handleEraClick(selectedEra) {
   const PANEL_W = 300
 
   return (
-    <div style={{ width: '100vw', height: '100vh', background: era.color, transition: 'background 1.5s ease', display: 'flex', overflow: 'hidden', fontFamily: 'Georgia, serif' }}>
+    <div style={{ width: '100vw', height: '100vh', background: THEME.bg, display: 'flex', overflow: 'hidden', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif' }}>
 
       {/* Iconos de era en fondo */}
       <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 0, overflow: 'hidden' }}>
@@ -262,7 +262,7 @@ async function handleEraClick(selectedEra) {
             left: ['18%', '62%', '78%'][i],
             transition: 'all 1.8s ease',
             userSelect: 'none',
-            filter: 'sepia(100%) brightness(0.6)'
+            filter: 'grayscale(100%) opacity(0.4)'
           }}>{icon}</div>
         ))}
       </div>
@@ -282,24 +282,26 @@ async function handleEraClick(selectedEra) {
         <div style={{ width: PANEL_W, padding: '20px 16px', overflowY: 'auto', flex: 1 }}>
 
           {/* Logo */}
-          <div style={{ fontSize: 18, fontWeight: 700, color: THEME.accent, letterSpacing: 2, marginBottom: 2 }}>
-            CHRONOGLOBE
-          </div>
-          <div style={{ fontSize: 11, color: THEME.textFaint, marginBottom: 20, letterSpacing: 2 }}>
-            ATLAS HISTÓRICO INTERACTIVO
+          <div style={{ marginBottom: 24 }}>
+            <div style={{ fontSize: 15, fontWeight: 700, color: THEME.accent, letterSpacing: -0.5, marginBottom: 2 }}>
+              Chronoglobe
+            </div>
+            <div style={{ fontSize: 10, color: THEME.textFaint, letterSpacing: 0.5 }}>
+              Atlas histórico interactivo
+            </div>
           </div>
 
           {/* Era actual */}
           <div style={{
-            background: 'rgba(139,94,26,0.12)',
-            borderRadius: 8, padding: 12, marginBottom: 16,
-            border: `1px solid ${THEME.accentDim}`,
-            boxShadow: `0 0 0 1px rgba(139,94,26,0.08)`
+            background: '#fff',
+            borderRadius: 10, padding: '12px 14px', marginBottom: 20,
+            border: `1px solid ${THEME.border}`,
+            boxShadow: '0 1px 4px rgba(0,0,0,0.06)'
           }}>
             <div style={{ fontSize: 12, color: THEME.textFaint, marginBottom: 4, textTransform: 'uppercase', letterSpacing: 1 }}>
               Período seleccionado
             </div>
-            <div style={{ fontSize: 15, fontWeight: 700, color: THEME.accent, marginBottom: 4 }}>
+            <div style={{ fontSize: 13, fontWeight: 700, color: THEME.accent, marginBottom: 4, letterSpacing: -0.3 }}>
               {era.label}
             </div>
             <div style={{ fontSize: 12, color: THEME.textDim, marginBottom: 8 }}>
@@ -326,19 +328,18 @@ async function handleEraClick(selectedEra) {
                 style={{
                   display: 'flex', alignItems: 'center', gap: 10,
                   padding: '7px 10px', borderRadius: 8,
-                  border: `1px solid ${filter === cat ? color : THEME.border}`,
-                  background: filter === cat ? `${color}28` : 'transparent',
+                  border: `1px solid ${filter === cat ? THEME.accent : THEME.border}`,
+                  background: filter === cat ? THEME.accent : '#fff',
                   cursor: 'pointer', textAlign: 'left', width: '100%',
-                  transition: 'all 0.15s', fontFamily: 'sans-serif'
+                  transition: 'all 0.15s', fontFamily: 'inherit'
                 }}>
                 <div style={{
-                  width: 10, height: 10, borderRadius: '50%',
-                  background: color, flexShrink: 0,
-                  boxShadow: filter === cat ? `0 0 6px ${color}` : 'none',
-                  transition: 'box-shadow 0.15s'
+                  width: 8, height: 8, borderRadius: '50%',
+                  background: filter === cat ? '#fff' : color,
+                  flexShrink: 0, transition: 'background 0.15s'
                 }} />
-                <span style={{ fontSize: 13 }}>{CAT_ICONS[cat]}</span>
-                <span style={{ fontSize: 12, color: filter === cat ? color : THEME.textDim, textTransform: 'capitalize', fontWeight: filter === cat ? 600 : 400 }}>
+                <span style={{ fontSize: 12 }}>{CAT_ICONS[cat]}</span>
+                <span style={{ fontSize: 12, color: filter === cat ? '#fff' : THEME.textDim, textTransform: 'capitalize', fontWeight: filter === cat ? 600 : 400 }}>
                   {cat}
                 </span>
               </button>
@@ -374,16 +375,17 @@ async function handleEraClick(selectedEra) {
 
       {/* Toggle izquierdo */}
       <button onClick={() => setLeftOpen(o => !o)} style={{
-        position: 'absolute', left: leftOpen ? PANEL_W : 0,
+        position: 'absolute', left: leftOpen ? 240 : 0,
         top: '50%', transform: 'translateY(-50%)',
         transition: 'left 0.3s ease',
         zIndex: 11,
-        background: THEME.panel,
+        background: '#fff',
         border: `1px solid ${THEME.border}`,
+        boxShadow: '0 1px 4px rgba(0,0,0,0.08)',
         color: THEME.accent,
-        width: 18, height: 44,
-        borderRadius: '0 6px 6px 0',
-        cursor: 'pointer', fontSize: 12,
+        width: 20, height: 40,
+        borderRadius: '0 8px 8px 0',
+        cursor: 'pointer', fontSize: 11,
         display: 'flex', alignItems: 'center', justifyContent: 'center'
       }}>
         {leftOpen ? '‹' : '›'}
@@ -408,9 +410,10 @@ async function handleEraClick(selectedEra) {
 
         {/* Timeline abajo */}
         <div style={{
-          background: THEME.panel,
+          background: '#fff',
           borderTop: `1px solid ${THEME.border}`,
-          padding: '4px 12px 6px',
+          boxShadow: '0 -1px 8px rgba(0,0,0,0.04)',
+          padding: '8px 16px 10px',
           zIndex: 5
         }}>
           {/* Eras clickeables */}
@@ -448,16 +451,18 @@ async function handleEraClick(selectedEra) {
                 <button key={e.from}
                   onClick={() => { setYearFrom(e.from); setYearTo(e.to); handleEraClick(e) }}
                   style={{
-                    fontSize: 11, padding: '4px 12px',
+                    fontSize: 11, padding: '5px 14px',
                     border: 'none',
                     borderRight: isLast ? 'none' : `1px solid ${THEME.border}`,
-                    background: active ? 'rgba(139,94,26,0.25)' : inRange ? 'rgba(139,94,26,0.08)' : 'transparent',
-                    color: active ? THEME.accent : inRange ? THEME.text : THEME.textFaint,
-                    cursor: 'pointer', fontFamily: 'Georgia, serif',
+                    background: active ? THEME.accent : 'transparent',
+                    color: active ? '#fff' : inRange ? THEME.text : THEME.textFaint,
+                    cursor: 'pointer', fontFamily: 'inherit',
                     whiteSpace: 'nowrap',
-                    transition: 'all 0.2s',
+                    transition: 'all 0.15s',
                     position: 'relative',
-                    flexShrink: 0
+                    flexShrink: 0,
+                    fontWeight: active ? 600 : 400,
+                    letterSpacing: active ? -0.3 : 0
                   }}>
                   {e.label}
                   {i < ERAS.length - 1 && (
@@ -474,11 +479,11 @@ async function handleEraClick(selectedEra) {
           </div>
 
           {/* Slider dual */}
-          <div style={{ position: 'relative', height: 6, borderRadius: 3, background: 'rgba(200,164,90,0.15)', cursor: 'pointer', marginBottom: 3 }}
+          <div style={{ position: 'relative', height: 4, borderRadius: 2, background: 'rgba(0,0,0,0.08)', cursor: 'pointer', marginBottom: 6 }}
             onClick={handleTrackClick}>
             <div style={{
               position: 'absolute', top: 0, height: '100%', borderRadius: 3,
-              background: THEME.accentDim,
+              background: 'rgba(26,26,26,0.5)',
               left: `${leftPct}%`, width: `${rightPct - leftPct}%`
             }} />
             {/* Thumb izquierdo */}
@@ -487,7 +492,7 @@ async function handleEraClick(selectedEra) {
               transform: 'translate(-50%, -50%)',
               width: 16, height: 16, borderRadius: '50%',
               background: THEME.accent, cursor: 'ew-resize', zIndex: 2,
-              boxShadow: '0 0 0 3px rgba(200,164,90,0.2)'
+              boxShadow: '0 1px 4px rgba(0,0,0,0.2)'
             }} onMouseDown={makeDraggable('left')} />
             {/* Thumb derecho */}
             <div style={{
@@ -495,7 +500,7 @@ async function handleEraClick(selectedEra) {
               transform: 'translate(-50%, -50%)',
               width: 16, height: 16, borderRadius: '50%',
               background: THEME.accent, cursor: 'ew-resize', zIndex: 2,
-              boxShadow: '0 0 0 3px rgba(200,164,90,0.2)'
+              boxShadow: '0 1px 4px rgba(0,0,0,0.2)'
             }} onMouseDown={makeDraggable('right')} />
           </div>
 
@@ -503,7 +508,7 @@ async function handleEraClick(selectedEra) {
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <input type="number" value={yearFrom}
               onChange={e => { const v = Number(e.target.value); if (v >= MIN_YEAR && v < yearTo) setYearFrom(v) }}
-              style={{ width: 76, padding: '3px 6px', borderRadius: 6, border: `1px solid ${THEME.border}`, background: 'rgba(200,164,90,0.08)', color: THEME.text, fontSize: 12, textAlign: 'center', fontFamily: 'Georgia, serif' }}
+              style={{ width: 72, padding: '3px 8px', borderRadius: 6, border: `1px solid ${THEME.border}`, background: '#fff', color: THEME.text, fontSize: 12, textAlign: 'center', fontFamily: 'inherit', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}
             />
             <span style={{ color: THEME.textFaint, fontSize: 11 }}>—</span>
             <input type="number" value={yearTo}
@@ -548,13 +553,13 @@ async function handleEraClick(selectedEra) {
         {/* Toggle derecho */}
         <button onClick={() => setRightOpen(o => !o)} style={{
           alignSelf: 'center',
-          background: THEME.panel,
+          background: '#fff',
           border: `1px solid ${THEME.border}`,
-          borderRight: 'none',
+          boxShadow: '0 1px 4px rgba(0,0,0,0.08)',
           color: THEME.accent,
-          width: 18, height: 44,
-          borderRadius: '6px 0 0 6px',
-          cursor: 'pointer', fontSize: 12,
+          width: 20, height: 40,
+          borderRadius: '8px 0 0 8px',
+          cursor: 'pointer', fontSize: 11,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           flexShrink: 0
         }}>
@@ -567,16 +572,17 @@ async function handleEraClick(selectedEra) {
           minWidth: rightOpen ? PANEL_W : 0,
           transition: 'width 0.3s ease, min-width 0.3s ease',
           overflow: 'hidden',
-          background: THEME.panel,
+          background: '#fff',
           borderLeft: `1px solid ${THEME.border}`,
+          boxShadow: '-2px 0 12px rgba(0,0,0,0.04)',
           flexShrink: 0
         }}>
           {!panel && (
             <div style={{ width: PANEL_W, padding: '20px 16px', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center' }}>
               <div style={{ fontSize: 32, marginBottom: 16 }}>📍</div>
-              <div style={{ fontSize: 13, fontWeight: 600, color: THEME.accent, marginBottom: 8 }}>
-                Explorá el mundo
-              </div>
+              <div style={{ fontSize: 13, fontWeight: 600, color: THEME.accent, marginBottom: 8, letterSpacing: -0.3 }}>
+              Explorá el mundo
+              </div> 
               <div style={{ fontSize: 12, color: THEME.textDim, lineHeight: 1.7, fontFamily: 'sans-serif' }}>
                 Tocá cualquier punto del globo para ver qué estaba pasando en ese lugar y momento histórico.
               </div>
@@ -613,9 +619,9 @@ async function handleEraClick(selectedEra) {
               {panel.parsed && panel.parsed.regiones && (
                 <div style={{ fontFamily: 'sans-serif' }}>
                   <div style={{
-                    background: 'rgba(139,94,26,0.08)',
+                    background: '#f8f8f8',
                     borderRadius: 8, padding: '10px 12px', marginBottom: 16,
-                    borderLeft: `2px solid ${THEME.accentDim}`
+                    border: `1px solid ${THEME.border}`
                   }}>
                     <div style={{ fontSize: 10, color: THEME.textFaint, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 4 }}>
                       {panel.isEra ? 'Transformación global' : 'En este lugar'}
