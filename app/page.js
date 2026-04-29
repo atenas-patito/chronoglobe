@@ -56,7 +56,17 @@ function yearToPercent(y) {
 
 function getEra(from, to) {
   const mid = (from + to) / 2
-  return ERAS.find(e => mid >= e.from && mid < e.to) || ERAS[ERAS.length - 1]
+  const found = ERAS.find(e => mid >= e.from && mid < e.to)
+  if (found) return found
+  // Si el rango abarca múltiples eras, mostrar la del centro
+  const spanning = ERAS.filter(e => from <= e.to && to >= e.from)
+  if (spanning.length > 1) return { 
+    ...spanning[Math.floor(spanning.length / 2)], 
+    label: 'Múltiples eras',
+    sub: `${formatYear(from)} — ${formatYear(to)}`,
+    icons: ['🌍', '⏳', '🗺️']
+  }
+  return ERAS[ERAS.length - 1]
 }
 
 function formatYear(y) {
@@ -281,9 +291,10 @@ async function handleEraClick(selectedEra) {
 
           {/* Era actual */}
           <div style={{
-            background: 'rgba(200,164,90,0.06)',
+            background: 'rgba(139,94,26,0.12)',
             borderRadius: 8, padding: 12, marginBottom: 16,
-            borderLeft: `2px solid ${THEME.accentDim}`
+            border: `1px solid ${THEME.accentDim}`,
+            boxShadow: `0 0 0 1px rgba(139,94,26,0.08)`
           }}>
             <div style={{ fontSize: 12, color: THEME.textFaint, marginBottom: 4, textTransform: 'uppercase', letterSpacing: 1 }}>
               Período seleccionado
@@ -313,35 +324,44 @@ async function handleEraClick(selectedEra) {
               <button key={cat}
                 onClick={() => setFilter(filter === cat ? 'all' : cat)}
                 style={{
-                  display: 'flex', alignItems: 'center', gap: 8,
-                  padding: '6px 10px', borderRadius: 8,
+                  display: 'flex', alignItems: 'center', gap: 10,
+                  padding: '7px 10px', borderRadius: 8,
                   border: `1px solid ${filter === cat ? color : THEME.border}`,
-                  background: filter === cat ? `${color}22` : 'transparent',
+                  background: filter === cat ? `${color}28` : 'transparent',
                   cursor: 'pointer', textAlign: 'left', width: '100%',
                   transition: 'all 0.15s', fontFamily: 'sans-serif'
                 }}>
-                <span style={{ fontSize: 14 }}>{CAT_ICONS[cat]}</span>
-                <span style={{ fontSize: 12, color: filter === cat ? color : THEME.textDim, textTransform: 'capitalize', fontWeight: filter === cat ? 600 : 400 }}>{cat}</span>
+                <div style={{
+                  width: 10, height: 10, borderRadius: '50%',
+                  background: color, flexShrink: 0,
+                  boxShadow: filter === cat ? `0 0 6px ${color}` : 'none',
+                  transition: 'box-shadow 0.15s'
+                }} />
+                <span style={{ fontSize: 13 }}>{CAT_ICONS[cat]}</span>
+                <span style={{ fontSize: 12, color: filter === cat ? color : THEME.textDim, textTransform: 'capitalize', fontWeight: filter === cat ? 600 : 400 }}>
+                  {cat}
+                </span>
               </button>
             ))}
           </div>
 
 <div style={{ marginBottom: 16 }} />
           {/* Cómo usar */}
-          <div style={{ fontSize: 12, color: THEME.textFaint, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 8 }}>
+          <div style={{ fontSize: 11, color: THEME.textFaint, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 8 }}>
             Cómo explorar
           </div>
           {[
-            { icon: '🖱️', text: 'Arrastrá el globo para rotarlo' },
-            { icon: '🔍', text: 'Rueda del mouse para zoom' },
-            { icon: '📍', text: 'Tocá un punto para ver el contexto histórico' },
-            { icon: '⏸️', text: 'Click en el globo pausa/reanuda la rotación' },
-            { icon: '📅', text: 'Arrastrá el slider o escribí los años' },
-            { icon: '⏳', text: 'Click en una era para saltar a ese período' },
+            { icon: '⏳', text: 'Hacé click en una era de la barra inferior para ver qué transformaciones ocurrían en el mundo en ese período.' },
+            { icon: '📍', text: 'Tocá cualquier punto del globo para ver el contexto histórico de ese lugar específico.' },
+            { icon: '🌍', text: 'Cada era muestra eventos simultáneos en todos los continentes — no solo en Europa.' },
+            { icon: '🏷️', text: 'Filtrá por categoría para ver solo eventos de filosofía, ciencia, política, etc.' },
+            { icon: '🖱️', text: 'Arrastrá el globo para rotarlo. Usá la rueda del mouse para hacer zoom.' },
+            { icon: '▶', text: 'Usá el botón Girar para activar o pausar la rotación automática.' },
+            { icon: '📅', text: 'Ajustá el rango de años con el slider o escribiendo directamente los años.' },
           ].map((item, i) => (
-            <div key={i} style={{ display: 'flex', gap: 8, marginBottom: 7, alignItems: 'flex-start' }}>
-              <span style={{ fontSize: 13 }}>{item.icon}</span>
-              <span style={{ fontSize: 12, color: THEME.textDim, lineHeight: 1.5, fontFamily: 'sans-serif' }}>{item.text}</span>
+            <div key={i} style={{ display: 'flex', gap: 8, marginBottom: 8, alignItems: 'flex-start' }}>
+              <span style={{ fontSize: 13, flexShrink: 0 }}>{item.icon}</span>
+              <span style={{ fontSize: 11, color: THEME.textDim, lineHeight: 1.5, fontFamily: 'sans-serif' }}>{item.text}</span>
             </div>
           ))}
 
