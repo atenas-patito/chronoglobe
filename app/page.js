@@ -106,8 +106,8 @@ export default function Home() {
   const [panel,     setPanel]     = useState(null)
   const [loading,   setLoading]   = useState(false)
   const [leftOpen,  setLeftOpen]  = useState(true)
-  const [rightOpen, setRightOpen] = useState(false)
-  const [rotating,  setRotating]  = useState(true)
+  const [rightOpen, setRightOpen] = useState(true)
+  const [rotating,  setRotating]  = useState(false)
 
   const era = getEra(yearFrom, yearTo)
 
@@ -187,19 +187,30 @@ export default function Home() {
           </div>`)
         .onPointClick(e => handlePointClick(e))
 
-      world.controls().autoRotate = true
+      world.controls().autoRotate = false
       world.controls().autoRotateSpeed = 0.4
 
       // Click en el globo: toggle rotación
       globeEl.current.addEventListener('click', () => {
         setRotating(r => {
           const next = !r
-          world.controls().autoRotate = next
+          world.controls().autoRotate = false
           return next
         })
       })
 
       worldRef.current = world
+
+      const ro = new ResizeObserver(() => {
+        if (globeEl.current) {
+          world.width(globeEl.current.offsetWidth)
+          world.height(globeEl.current.offsetHeight)
+        }
+      })
+      ro.observe(globeEl.current)
+      return () => ro.disconnect()
+    })
+  }, [])
 
       const handleResize = () => {
         if (globeEl.current) {
@@ -428,6 +439,20 @@ export default function Home() {
               style={{ width: 76, padding: '3px 6px', borderRadius: 6, border: `1px solid ${THEME.border}`, background: 'rgba(200,164,90,0.08)', color: THEME.text, fontSize: 12, textAlign: 'center', fontFamily: 'Georgia, serif' }}
             />
             <span style={{ fontSize: 11, color: THEME.accent, marginLeft: 4, fontStyle: 'italic' }}>{era.label}</span>
+            <button onClick={() => {
+              const next = !rotating
+              setRotating(next)
+              if (worldRef.current) worldRef.current.controls().autoRotate = next
+            }} style={{
+              marginLeft: 8,
+              fontSize: 11, padding: '3px 10px', borderRadius: 20,
+              border: `1px solid ${THEME.border}`,
+              background: rotating ? 'rgba(139,94,26,0.15)' : 'transparent',
+              color: rotating ? THEME.accent : THEME.textDim,
+              cursor: 'pointer', fontFamily: 'sans-serif'
+            }}>
+              {rotating ? '⏸ Pausar' : '▶ Girar'}
+            </button>
 
             <div style={{ marginLeft: 'auto', display: 'flex', gap: 3 }}>
               {['all','filosofia','derecho','ciencia','politica','arte','economia'].map(cat => (
@@ -473,7 +498,18 @@ export default function Home() {
         zIndex: 10,
         flexShrink: 0
       }}>
-         {panel && (
+         {!panel && (
+          <div style={{ width: PANEL_W, padding: '20px 16px', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center' }}>
+            <div style={{ fontSize: 32, marginBottom: 16 }}>📍</div>
+            <div style={{ fontSize: 13, fontWeight: 600, color: THEME.accent, marginBottom: 8 }}>
+              Explorá el mundo
+            </div>
+            <div style={{ fontSize: 12, color: THEME.textDim, lineHeight: 1.7, fontFamily: 'sans-serif' }}>
+              Tocá cualquier punto del globo para ver qué estaba pasando en ese lugar y momento histórico.
+            </div>
+          </div>
+        )}
+        {panel && (
           <div style={{ width: PANEL_W, padding: '20px 16px', overflowY: 'auto', height: '100%' }}>
             <button onClick={() => { setPanel(null); setRightOpen(false) }} style={{
               float: 'right', background: 'none', border: 'none',
