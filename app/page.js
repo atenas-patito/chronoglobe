@@ -220,7 +220,7 @@ export default function Home() {
   const rightPct = yearToPercent(yearTo)
   const categories = ['all','filosofia','derecho','ciencia','politica','arte','economia']
 
-  const PANEL_W = 320
+  const PANEL_W = 300
 
   return (
     <div style={{ width: '100vw', height: '100vh', background: era.color, transition: 'background 1.5s ease', display: 'flex', overflow: 'hidden', fontFamily: 'Georgia, serif' }}>
@@ -259,7 +259,7 @@ export default function Home() {
           <div style={{ fontSize: 18, fontWeight: 700, color: THEME.accent, letterSpacing: 2, marginBottom: 2 }}>
             CHRONOGLOBE
           </div>
-          <div style={{ fontSize: 9, color: THEME.textFaint, marginBottom: 20, letterSpacing: 2 }}>
+          <div style={{ fontSize: 11, color: THEME.textFaint, marginBottom: 20, letterSpacing: 2 }}>
             ATLAS HISTÓRICO INTERACTIVO
           </div>
 
@@ -269,7 +269,7 @@ export default function Home() {
             borderRadius: 8, padding: 12, marginBottom: 16,
             borderLeft: `2px solid ${THEME.accentDim}`
           }}>
-            <div style={{ fontSize: 10, color: THEME.textFaint, marginBottom: 4, textTransform: 'uppercase', letterSpacing: 1 }}>
+            <div style={{ fontSize: 12, color: THEME.textFaint, marginBottom: 4, textTransform: 'uppercase', letterSpacing: 1 }}>
               Período seleccionado
             </div>
             <div style={{ fontSize: 15, fontWeight: 700, color: THEME.accent, marginBottom: 4 }}>
@@ -288,18 +288,27 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Leyenda */}
-          <div style={{ fontSize: 12, color: THEME.textFaint, textTransform: 'uppercase', letterSpacing: 1, marginTop: 16, marginBottom: 8 }}>
+      {/* Leyenda */}
+          <div style={{ fontSize: 11, color: THEME.textFaint, textTransform: 'uppercase', letterSpacing: 1, marginTop: 16, marginBottom: 8 }}>
             Categorías
           </div>
-          {Object.entries(CAT_COLORS).map(([cat, color]) => (
-            <div key={cat} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6, cursor: 'pointer' }}
-              onClick={() => setFilter(filter === cat ? 'all' : cat)}>
-              <span style={{ fontSize: 13 }}>{CAT_ICONS[cat]}</span>
-              <span style={{ fontSize: 12, color: filter === cat ? THEME.accent : THEME.textDim, fontFamily: 'sans-serif', textTransform: 'capitalize' }}>{cat}</span>
-              {filter === cat && <span style={{ fontSize: 9, color: THEME.accentDim }}>✓</span>}
-            </div>
-          ))}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+            {Object.entries(CAT_COLORS).map(([cat, color]) => (
+              <button key={cat}
+                onClick={() => setFilter(filter === cat ? 'all' : cat)}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: 8,
+                  padding: '6px 10px', borderRadius: 8,
+                  border: `1px solid ${filter === cat ? color : THEME.border}`,
+                  background: filter === cat ? `${color}22` : 'transparent',
+                  cursor: 'pointer', textAlign: 'left', width: '100%',
+                  transition: 'all 0.15s', fontFamily: 'sans-serif'
+                }}>
+                <span style={{ fontSize: 14 }}>{CAT_ICONS[cat]}</span>
+                <span style={{ fontSize: 12, color: filter === cat ? color : THEME.textDim, textTransform: 'capitalize', fontWeight: filter === cat ? 600 : 400 }}>{cat}</span>
+              </button>
+            ))}
+          </div>
 
 <div style={{ marginBottom: 16 }} />
           {/* Cómo usar */}
@@ -338,7 +347,7 @@ export default function Home() {
         color: THEME.accent,
         width: 18, height: 44,
         borderRadius: '0 6px 6px 0',
-        cursor: 'pointer', fontSize: 10,
+        cursor: 'pointer', fontSize: 12,
         display: 'flex', alignItems: 'center', justifyContent: 'center'
       }}>
         {leftOpen ? '‹' : '›'}
@@ -377,7 +386,7 @@ export default function Home() {
                 <button key={e.from}
                   onClick={() => { setYearFrom(e.from); setYearTo(e.to) }}
                   style={{
-                    fontSize: 10, padding: '2px 8px', borderRadius: 20,
+                    fontSize: 12, padding: '3px 9px', borderRadius: 20,
                     border: `1px solid ${active ? THEME.accent : THEME.border}`,
                     background: active ? 'rgba(200,164,90,0.2)' : inRange ? 'rgba(200,164,90,0.06)' : 'transparent',
                     color: active ? THEME.accent : inRange ? THEME.text : THEME.textFaint,
@@ -446,7 +455,7 @@ export default function Home() {
             <div style={{ marginLeft: 'auto', display: 'flex', gap: 3 }}>
               {['all','filosofia','derecho','ciencia','politica','arte','economia'].map(cat => (
                 <button key={cat} onClick={() => setFilter(cat)} style={{
-                  fontSize: 10, padding: '2px 7px', borderRadius: 20,
+                  fontSize: 12, padding: '3px 9px', borderRadius: 20,
                   border: `1px solid ${filter === cat ? THEME.accent : THEME.border}`,
                   background: filter === cat ? 'rgba(200,164,90,0.2)' : 'transparent',
                   color: filter === cat ? THEME.accent : THEME.textDim,
@@ -460,107 +469,107 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Toggle derecho */}
-     <button onClick={() => setRightOpen(o => !o)} style={{
-        alignSelf: 'center',
-        background: THEME.panel,
-        border: `1px solid ${THEME.border}`,
-        borderRight: rightOpen ? 'none' : `1px solid ${THEME.border}`,
-        color: THEME.accent,
-        width: 18, height: 44,
-        borderRadius: rightOpen ? '6px 0 0 6px' : '6px',
-        cursor: 'pointer', fontSize: 10,
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        flexShrink: 0, zIndex: 11
-      }}>
-        {rightOpen ? '›' : '‹'}
-      </button>
+      {/* Panel derecho + toggle */}
+      <div style={{ display: 'flex', flexShrink: 0, zIndex: 10 }}>
+        {/* Toggle derecho */}
+        <button onClick={() => setRightOpen(o => !o)} style={{
+          alignSelf: 'center',
+          background: THEME.panel,
+          border: `1px solid ${THEME.border}`,
+          borderRight: 'none',
+          color: THEME.accent,
+          width: 18, height: 44,
+          borderRadius: '6px 0 0 6px',
+          cursor: 'pointer', fontSize: 12,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          flexShrink: 0
+        }}>
+          {rightOpen ? '›' : '‹'}
+        </button>
 
-      {/* Panel derecho */}
-     <div style={{
-        width: rightOpen ? PANEL_W : 0,
-        minWidth: rightOpen ? PANEL_W : 0,
-        transition: 'width 0.3s ease, min-width 0.3s ease',
-        overflow: 'hidden',
-        background: THEME.panel,
-        borderLeft: `1px solid ${THEME.border}`,
-        zIndex: 10,
-        flexShrink: 0
-      }}>
-         {!panel && (
-          <div style={{ width: PANEL_W, padding: '20px 16px', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center' }}>
-            <div style={{ fontSize: 32, marginBottom: 16 }}>📍</div>
-            <div style={{ fontSize: 13, fontWeight: 600, color: THEME.accent, marginBottom: 8 }}>
-              Explorá el mundo
-            </div>
-            <div style={{ fontSize: 12, color: THEME.textDim, lineHeight: 1.7, fontFamily: 'sans-serif' }}>
-              Tocá cualquier punto del globo para ver qué estaba pasando en ese lugar y momento histórico.
-            </div>
-          </div>
-        )}
-        {panel && (
-          <div style={{ width: PANEL_W, padding: '20px 16px', overflowY: 'auto', height: '100%' }}>
-            <button onClick={() => { setPanel(null); setRightOpen(false) }} style={{
-              float: 'right', background: 'none', border: 'none',
-              color: THEME.textDim, fontSize: 18, cursor: 'pointer'
-            }}>×</button>
-
-            <div style={{ fontSize: 10, color: THEME.textFaint, marginBottom: 4, textTransform: 'uppercase', letterSpacing: 1, fontFamily: 'sans-serif' }}>
-              {panel.region}
-            </div>
-            <div style={{ fontSize: 15, fontWeight: 700, color: THEME.accent, marginBottom: 4 }}>
-              {CAT_ICONS[panel.cat]} {panel.name}
-            </div>
-            <div style={{ fontSize: 11, color: THEME.textDim, marginBottom: 16, fontFamily: 'sans-serif' }}>
-              {formatYear(panel.year)}
-            </div>
-
-            {loading && (
-              <div style={{ fontSize: 12, color: THEME.textDim, fontStyle: 'italic', fontFamily: 'sans-serif' }}>
-                Consultando fuentes históricas...
+        {/* Panel derecho */}
+        <div style={{
+          width: rightOpen ? PANEL_W : 0,
+          minWidth: rightOpen ? PANEL_W : 0,
+          transition: 'width 0.3s ease, min-width 0.3s ease',
+          overflow: 'hidden',
+          background: THEME.panel,
+          borderLeft: `1px solid ${THEME.border}`,
+          flexShrink: 0
+        }}>
+          {!panel && (
+            <div style={{ width: PANEL_W, padding: '20px 16px', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center' }}>
+              <div style={{ fontSize: 32, marginBottom: 16 }}>📍</div>
+              <div style={{ fontSize: 13, fontWeight: 600, color: THEME.accent, marginBottom: 8 }}>
+                Explorá el mundo
               </div>
-            )}
+              <div style={{ fontSize: 12, color: THEME.textDim, lineHeight: 1.7, fontFamily: 'sans-serif' }}>
+                Tocá cualquier punto del globo para ver qué estaba pasando en ese lugar y momento histórico.
+              </div>
+            </div>
+          )}
+          {panel && (
+            <div style={{ width: PANEL_W, padding: '20px 16px', overflowY: 'auto', height: '100%' }}>
+              <button onClick={() => { setPanel(null); setRightOpen(true) }} style={{
+                float: 'right', background: 'none', border: 'none',
+                color: THEME.textDim, fontSize: 18, cursor: 'pointer'
+              }}>×</button>
 
-            {panel.parsed && (
-              <div style={{ fontFamily: 'sans-serif' }}>
-                {/* Texto local */}
-                <div style={{
-                  background: 'rgba(139,94,26,0.08)',
-                  borderRadius: 8, padding: '10px 12px', marginBottom: 16,
-                  borderLeft: `2px solid ${THEME.accentDim}`
-                }}>
-                  <div style={{ fontSize: 10, color: THEME.textFaint, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 4 }}>
-                    En este lugar
-                  </div>
-                  <p style={{ fontSize: 13, lineHeight: 1.7, color: THEME.text, margin: 0 }}>
-                    {panel.parsed.local}
-                  </p>
-                </div>
+              <div style={{ fontSize: 10, color: THEME.textFaint, marginBottom: 4, textTransform: 'uppercase', letterSpacing: 1, fontFamily: 'sans-serif' }}>
+                {panel.region}
+              </div>
+              <div style={{ fontSize: 15, fontWeight: 700, color: THEME.accent, marginBottom: 4 }}>
+                {CAT_ICONS[panel.cat]} {panel.name}
+              </div>
+              <div style={{ fontSize: 11, color: THEME.textDim, marginBottom: 16, fontFamily: 'sans-serif' }}>
+                {formatYear(panel.year)}
+              </div>
 
-                {/* Regiones */}
-                <div style={{ fontSize: 10, color: THEME.textFaint, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 10 }}>
-                  Mientras tanto en el mundo
+              {loading && (
+                <div style={{ fontSize: 12, color: THEME.textDim, fontStyle: 'italic', fontFamily: 'sans-serif' }}>
+                  Consultando fuentes históricas...
                 </div>
-                {panel.parsed.regiones.map((r, i) => (
-                  <div key={i} style={{ marginBottom: 12 }}>
-                    <div style={{ fontSize: 12, fontWeight: 600, color: THEME.accent, marginBottom: 3 }}>
-                      {r.emoji} {r.nombre}
+              )}
+
+              {panel.parsed && (
+                <div style={{ fontFamily: 'sans-serif' }}>
+                  <div style={{
+                    background: 'rgba(139,94,26,0.08)',
+                    borderRadius: 8, padding: '10px 12px', marginBottom: 16,
+                    borderLeft: `2px solid ${THEME.accentDim}`
+                  }}>
+                    <div style={{ fontSize: 10, color: THEME.textFaint, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 4 }}>
+                      En este lugar
                     </div>
-                    <p style={{ fontSize: 12, lineHeight: 1.6, color: THEME.textDim, margin: 0 }}>
-                      {r.texto}
+                    <p style={{ fontSize: 13, lineHeight: 1.7, color: THEME.text, margin: 0 }}>
+                      {panel.parsed.local}
                     </p>
                   </div>
-                ))}
-              </div>
-            )}
 
-            {!panel.parsed && panel.text && (
-              <p style={{ fontSize: 13, lineHeight: 1.8, color: THEME.text, fontFamily: 'sans-serif' }}>
-                {panel.text}
-              </p>
-            )}
-          </div>
-        )}
+                  <div style={{ fontSize: 10, color: THEME.textFaint, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 10 }}>
+                    Mientras tanto en el mundo
+                  </div>
+                  {panel.parsed.regiones.map((r, i) => (
+                    <div key={i} style={{ marginBottom: 12 }}>
+                      <div style={{ fontSize: 12, fontWeight: 600, color: THEME.accent, marginBottom: 3 }}>
+                        {r.emoji} {r.nombre}
+                      </div>
+                      <p style={{ fontSize: 12, lineHeight: 1.6, color: THEME.textDim, margin: 0 }}>
+                        {r.texto}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {!panel.parsed && panel.text && (
+                <p style={{ fontSize: 13, lineHeight: 1.8, color: THEME.text, fontFamily: 'sans-serif' }}>
+                  {panel.text}
+                </p>
+              )}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   )
